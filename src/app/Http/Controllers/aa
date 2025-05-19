@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\ProfileRequest;
+use App\Http\Requests\AddressRequest;
+use App\Models\Profile;
+
+class ProfileController extends Controller
+{
+    public function edit()  { return view('mypage/edit');  }
+    public function mypage()  { return view('mypage/home');}
+
+
+    
+    public function edit_profile(AddressRequest $addressRequest, ProfileRequest $profileRequest){
+    $user = auth()->user();
+
+    // ユーザー名の更新（usersテーブル）
+    $user->name = $addressRequest->input('name');
+    $user->save();
+
+    // プロフィール情報（profilesテーブル）
+    $profile = Profile::updateOrCreate(
+    ['user_id' => $user->id], // 検索条件
+    array_merge( // マージしてuser_idを含める
+        ['user_id' => $user->id],
+        $addressRequest->only(['postal_code', 'address', 'building'])
+    ));
+
+    // プロフィール画像（profile_imagesテーブル）
+    if ($profileRequest->hasFile('profile_image')) {
+        // 既存画像削除
+        if ($user->profileImages()->exists()) {
+            foreach ($user->profileImages as $image) {
+                Storage::disk('public')->delete($image->path);
+                $image->delete();
+            }
+        }
+
+        // 新規画像保存
+        $path = $profileRequest->file('profile_image')->store('profile_images', 'public');
+        $user->profileImages()->create(['path' => $path]);
+    }
+
+    return redirect()->route('mypage');
+}
+
+    
+}

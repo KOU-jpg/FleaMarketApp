@@ -1,0 +1,97 @@
+erDiagram
+USERS ||--o| PROFILES : has
+USERS ||--o{ PROFILE_IMAGES : has
+USERS ||--o{ ITEMS : has
+USERS ||--o{ COMMENTS : has
+USERS ||--o{ FAVORITES : has
+
+ITEMS ||--o{ ITEM_IMAGES : has
+ITEMS }o--|| CONDITIONS : belongs_to
+ITEMS ||--o{ CATEGORY_ITEM : ""
+ITEMS ||--o{ COMMENTS : has
+ITEMS ||--o{ FAVORITES : has
+CATEGORIES ||--o{ CATEGORY_ITEM : ""
+USERS {
+        int id PK
+        string name
+        string email
+        timestamp email_verified_at
+        string password
+        string remember_token
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_a
+    }
+
+CATEGORIES {
+    int id PK
+    string name
+    }
+
+CONDITIONS {
+    int id PK
+    string name
+    }
+
+ITEMS {
+    int id PK
+    int user_id FK
+    int buyer_id FK
+    int condition_id FK
+    string name
+    text description
+    string brand
+    decimal price
+    timestamp sold_at
+    unsignedInteger favorite_count
+    unsignedInteger like_count
+    timestamp created_at
+    timestamp updated_at
+}
+
+PROFILES {
+    int id PK
+    int user_id FK
+    string postal_code
+    string address
+    string building
+    timestamp created_at
+    timestamp updated_at
+    }
+
+PROFILE_IMAGES {
+    int id PK
+    int user_id FK
+    string path
+    timestamp created_at
+    }
+    
+ITEM_IMAGES {
+    int id PK
+    int item_id FK
+    string path
+    int order
+    timestamp created_at
+    }
+
+CATEGORY_ITEM {
+    int item_id PK,FK
+    int category_id PK,FK
+    }
+
+COMMENTS {
+    int id PK
+    int item_id FK
+    int user_id FK
+    text comment
+    timestamp created_at
+    timestamp updated_at
+    }
+
+FAVORITES {
+    int id PK
+    int user_id FK
+    int item_id FK
+    timestamp created_at
+    timestamp updated_at
+}

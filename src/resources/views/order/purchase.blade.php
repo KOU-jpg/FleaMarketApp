@@ -1,0 +1,98 @@
+@extends('layouts.app')
+
+@section('title')
+  purchase
+@endsection
+
+@section('css')
+  <link rel="stylesheet" href="{{ asset('css/purchase.css') }}">
+@endsection
+
+@section('header')
+@endsection
+
+@section('content')
+<form action="{{ route('purchase.store', ['item' => $item->id]) }}" method="POST" novalidate>
+  @csrf
+  <div class="purchase-container">
+    <!-- 左カラム -->
+    <section class="purchase-left">
+      <div class="product-summary">
+        <div class="product-image-box">
+          @if($item->images->count())
+            <img src="{{ asset('storage/' . $item->images->first()->path) }}" alt="{{ $item->name }}">
+          @else
+            <span>画像なし</span>
+          @endif
+        </div>
+        <div class="product-info">
+          <div class="product-name">{{ $item->name }}</div>
+          <div class="product-price">¥{{ number_format($item->price) }}</div>
+        </div>
+      </div>
+      <hr>
+      <div class="payment-section">
+        <div class="title-row">
+          <div class="section-title">支払い方法</div>
+          @error('payment_method')
+            <div class="error-message">{{ $message }}</div>
+          @enderror
+        </div>
+        <select class="payment-select" name="payment_method" required>
+          <option value="">選択してください</option>
+          <option value="convenience">コンビニ払い</option>
+          <option value="card">カード払い</option>
+        </select>
+      </div>
+      <hr>
+      <div class="address-section">
+        <div class="title-row">
+          <div class="section-title">配送先</div>
+          <a href="{{ route('address.edit', ['item_id' => $item->id]) }}" class="address-change">変更する</a>
+          @error('address_id')
+              <div class="error-message">{{ $message }}</div>
+          @enderror
+        </div>
+        <div class="address-info">
+          〒 {{ $address->postal_code ?? 'XXX-YYYY' }}<br>
+          {{ $address->address ?? 'ここには住所が入ります' }}<br>
+          {{ $address->building ?? '' }}
+          <input type="hidden" name="address_id" value="{{ $address->id ?? '' }}">
+        </div>
+        <hr>
+      </div>
+    </section>
+    <!-- 右カラム -->
+    <section class="purchase-right">
+      <div class="order-summary">
+        <div class="order-row">
+          <span class="order-label">商品代金</span>
+          <span class="order-value">¥{{ number_format($item->price) }}</span>
+        </div>
+        <div class="order-row">
+          <span class="order-label">支払い方法</span>
+          <span class="order-value" id="summary-payment-method">選択してください</span>
+        </div>
+      </div>
+      @if($item->sold_at)
+        <button class="purchase-btn soldout" type="button" disabled>既に購入されています</button>
+      @else
+        <button class="purchase-btn" type="submit">購入する</button>
+      @endif
+    </section>
+  </div>
+</form>
+
+<script>
+  // 支払い方法の選択内容を右カラムに反映
+  document.addEventListener('DOMContentLoaded', function () {
+    const select = document.querySelector('.payment-select');
+    const summary = document.getElementById('summary-payment-method');
+    if (select && summary) {
+      select.addEventListener('change', function () {
+        summary.textContent = select.options[select.selectedIndex].text;
+      });
+    }
+  });
+</script>
+@endsection

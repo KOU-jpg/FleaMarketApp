@@ -1,0 +1,157 @@
+main {
+    margin: 0 auto;
+    padding: 48px;
+    background: #fff;
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 36px;
+    padding: 0 48px;
+}
+
+.tab {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    color: #888;
+    padding: 0 0 6px 0;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.tab.active {
+    color: #ff0000;
+    border-bottom: 3px solid #ff0000;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #bbb;
+    margin: 14px 0 32px 0;
+}
+.item-list-wrapper {
+    position: relative;
+    /* ここを基準にする */
+}
+
+.item-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 220px); /* カード幅を固定に */
+    gap: clamp(12px, 2vw, 24px); /* 隙間の最大値をclampでコントロール */
+    justify-content: start; /* ← 左詰めにする */
+}
+
+.item-list a {
+    width: 180px;
+    text-decoration: none;
+}
+
+.item-card{
+    margin: 16px 12px;
+}
+
+
+.item-image {
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative; /* ← これが重要 */
+}
+
+.sold-label {
+    position: absolute;
+    left: -40px;
+    top: 12px;
+    width: 140px;
+    transform: rotate(-45deg);
+    background: #ff2d2d;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    padding: 4px 0;
+    z-index: 2;
+    letter-spacing: 2px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    pointer-events: none;
+    user-select: none;
+}
+
+.item-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    display: block;
+    background: transparent;
+}
+
+.item-name {
+    font-size: 15px;
+    color: #222;
+    margin-top: 8px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* 2行まで表示 */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.modal-overlay {
+    display: none;
+    position: absolute; /* item-list-wrapper基準 */
+    top: 0;
+    left: 0;
+    width: 100%;    /* item-listと同じ幅 */
+    height: 100%;   /* item-listと同じ高さ */
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+
+#modal-toggle:checked~.item-list-wrapper .modal-overlay {
+    display: block;
+}
+
+.modal-content {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.modal-title-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.modal-tab {
+    font-size: 16px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    padding: 0 0 4px 0;
+    margin-right: 16px;
+}
+
+.modal-tab.active {
+    color: #2196f3;
+    border-bottom: 2px solid #2196f3;
+}
+
+/* チェックボックスがONのときだけモーダルを表示 */
+#modal-toggle:checked~.modal-overlay {
+    display: block; }
