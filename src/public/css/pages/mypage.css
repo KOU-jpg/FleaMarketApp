@@ -64,13 +64,13 @@ main {
     color: #fff;
 }
 
-.modal-tabs {
+.pages {
     display: flex;
     gap: 36px;
     padding: 0 48px;
 }
 
-.tab {
+.page {
     background: none;
     border: none;
     font-size: 16px;
@@ -79,9 +79,11 @@ main {
     padding: 0 0 6px 0;
     border-bottom: 3px solid transparent;
     transition: color 0.2s, border-color 0.2s;
+    cursor: pointer;
+    text-decoration: none;
 }
 
-.tab.active {
+.page.active {
     color: #ff0000;
     border-bottom: 3px solid #ff0000;
 }
@@ -91,27 +93,23 @@ hr {
     border-top: 1px solid #bbb;
     margin: 14px 0 32px 0;
 }
-.item-list-wrapper {
-    position: relative; /* ここを基準にする */
-  }
 
 .item-list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 220px); /* カード幅を固定に */
-    gap: clamp(12px, 2vw, 24px); /* 隙間の最大値をclampでコントロール */
-    justify-content: start; /* ← 左詰めにする */
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: clamp(12px, 2vw, 24px);
+    justify-content: start;
+    justify-items: start;
 }
 
-
 .item-list a {
-    width: 180px;
+    width: 220px;
     text-decoration: none;
 }
 
 .item-card {
-    margin: 16px 12px;
+    margin: 16px 0px;
 }
-
 
 .item-image {
     width: 220px;
@@ -122,7 +120,6 @@ hr {
     border-radius: 4px;
     overflow: hidden;
     position: relative;
-    /* ← これが重要 */
 }
 
 .sold-label {
@@ -159,60 +156,7 @@ hr {
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* 2行まで表示 */
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     white-space: normal;
-}
-.modal-overlay {
-  display: none;
-  position: absolute; /* item-list-wrapper基準 */
-  top: 0;
-  left: 0;
-  width: 100%;    /* item-listと同じ幅 */
-  height: 100%;   /* item-listと同じ高さ */
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-}
-
-#modal-toggle:checked ~ .item-list-wrapper .modal-overlay {
-  display: block;
-}
-
-.modal-content {
-    background: #fff;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    box-sizing: border-box;
-    position: relative;
-  }
-
-.modal-title-row {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 18px;
-}
-
-.modal-tab {
-    font-size: 16px;
-    font-weight: bold;
-    background: none;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: color 0.2s, border-color 0.2s;
-    padding: 0 0 4px 0;
-    margin-right: 16px;
-}
-
-.modal-tab.active {
-    color: #2196f3;
-    border-bottom: 2px solid #2196f3;
-}
-
-/* チェックボックスがONのときだけモーダルを表示 */
-#modal-toggle:checked~.modal-overlay {
-    display: block;
 }

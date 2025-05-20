@@ -1,58 +1,80 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SellController;
 
 
-// 認証関連
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::get('register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'register_user']);
-Route::post('/login', [AuthController::class, 'login_user']);
+// 商品一覧（トップ画面）
+Route::get('/', [ItemController::class, 'index'])->name('items.index');
+
+// 商品一覧（マイリスト）※認証必須
+//Route::get('/', [ItemController::class, 'mylist'])
+//    ->name('items.mylist')
+//   ->middleware('auth')
+//    ->where('tab', 'mylist')
+//    ->defaults('tab', 'mylist');
+
+// 会員登録
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+// ログイン
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+//ログアウト
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// 認証必須ルート
+// メール認証（認証必須 ※トークン等で判定）
+Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
+
+// 商品詳細
+Route::get('/items/{item}', [ItemController::class, 'detail'])->name('items.detail');
+
+// 商品購入（認証必須）
 Route::middleware('auth')->group(function () {
-    Route::get('/', [AppController::class, 'index'])->name('index');
+    // マイリスト（ログインユーザーのみ）
+    Route::get('/mylist', [ItemController::class, 'mylist'])->name('items.mylist');
+    //コメント投稿処理
+    Route::post('/comments', [ItemController::class, 'store_comment'])->name('comments.store')->middleware('auth');
+    //お気に入り保存処理
+    Route::post('/favorite/toggle', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
+
+    // 商品購入画面
+    Route::get('/purchase/{item}', [OrderController::class, 'show'])->name('purchase.show');
+    //購入処理
+    Route::post('/purchase/{item}', [OrderController::class, 'purchase'])->name('purchase');
+    Route::get('/thanks', [OrderController::class, 'thanks'])->name('thanks');
+
+    // 住所変更ページ
+    Route::get('/purchase/address/{item}', [OrderController::class, 'showAddressForm'])->name('address.form');
+    Route::post('/purchase/address/{item}', [OrderController::class, 'updateAddress'])->name('address.update');
+
+    // 商品出品
+    Route::get('/sell', [SellController::class, 'showForm'])->name('sell.form');
+    Route::post('/sell', [SellController::class, 'sell'])->name('sell');
+
+    // プロフィール画面
+    Route::get('/mypage', [UserController::class, 'show'])->name('mypage');
+
+    // プロフィール編集
+    Route::get('/mypage/profile', [UserController::class, 'editProfile'])->name('mypage.profile.edit');
+    Route::post('/mypage/profile', [UserController::class, 'updateProfile'])->name('mypage.profile.update');
+
+    // プロフィール画面_購入した商品一覧
+    //Route::get('/mypage', [UserController::class, 'buyList'])
+    //    ->name('mypage.buy')
+    //    ->where('tab', 'buy')
+    //    ->defaults('tab', 'buy');
+
+    // プロフィール画面_出品した商品一覧
+    //Route::get('/mypage', [UserController::class, 'sellList'])
+    //    ->name('mypage.sell')
+    //    ->where('tab', 'sell')
+    //    ->defaults('tab', 'sell');
 });
-
-// その他のルート（必要に応じて追加）
-Route::get('address', [AppController::class, 'address']);
-Route::get('mypage', [AppController::class, 'mypage'])->name('mypage');
-Route::get('edit', [ProfileController::class, 'edit'])->name('edit');
-Route::post('edit', [ProfileController::class, 'edit_profile']);
-
-
-// 出品ページ
-Route::get('sell', [AppController::class, 'sell'])->name('sell');
-Route::post('/sell', [ItemController::class, 'store'])->name('items.store');
-Route::post('/favorite/toggle', [FavoriteController::class, 'toggle']);
-
-
-
-
-// 配送先住所編集
-Route::get('/address/edit', [OrderController::class, 'editAddress'])->name('address.edit');
-Route::post('/address/update', [OrderController::class, 'updateAddress'])->name('address.update');
-
-
-
-
-// 商品詳細表示（コメント付き）
-Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
-Route::post('/comments', [ItemController::class, 'store_comment'])->name('comments.store')->middleware('auth');
-Route::post('/favorite/toggle', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
-
-// 購入確認画面（GET）
-Route::get('/purchase/{item}', [OrderController::class, 'purchase'])->name('purchase.show');
-
-// 購入処理（POST）
-Route::post('/purchase/{item}', [OrderController::class, 'store'])->name('purchase.store');
-
-// サンクスページ
-Route::get('/order/thanks', [OrderController::class, 'thanks'])->name('thanks');

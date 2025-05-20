@@ -18,9 +18,9 @@ class CreateProfilesTable extends Migration
     $table->foreignId('user_id')->constrained()->cascadeOnDelete();
     $table->string('postal_code', 8);
     $table->string('address');
-    $table->string('building'); // 今回、建物名はnull許容しない
-    $table->timestamps();
+    $table->string('building');     $table->timestamps();
     $table->unique('user_id'); // 1ユーザー1プロファイルを保証
+    $table->string('image_path')->nullable();
         });
     }
 

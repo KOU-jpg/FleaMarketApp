@@ -29,9 +29,5 @@ class Item extends Model
     public function favorites()    {
     return $this->hasMany(Favorite::class, 'item_id');}
     use HasFactory;
-    public function favoredByUsers()
-{
-    return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
-}
-
+    
 }

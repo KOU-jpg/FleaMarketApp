@@ -6,7 +6,7 @@ login
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/login.css') }}">
 @endsection
 
 @section('header')

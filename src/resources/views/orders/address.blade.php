@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('title')
-    edit_profile
+    edit_address
 @endsection
 
 @section('css')
-    <link rel="stylesheet" href="{{ asset('css/edit_profile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/pages/edit.css') }}">
 @endsection
 
 @section('header')
@@ -14,7 +14,8 @@
 @section('content')
     <div class="profile-container">
         <h2>配送先住所の編集</h2>
-        <form method="POST" action="{{ route('address.update') }}" enctype="multipart/form-data" novalidate>
+        <form method="POST" action="{{ route('address.update', ['item' => $item->id]) }}" enctype="multipart/form-data"
+            novalidate>
             @csrf
             <input type="hidden" name="name" value="{{ old('name', Auth::user()->name) }}">
             <input type="hidden" name="item_id" value="{{ request('item_id') }}">
@@ -46,6 +47,7 @@
             </div>
             <button type="submit" class="update-btn">更新する</button>
         </form>
-        <a href="{{ route('purchase.show', ['item' => request('item_id')]) }}" class="back-btn">← 戻る</a>
+        <a href="{{ route('purchase.show', ['item' => $item->id]) }}" class="back-btn">購入ページへ</a>
+
     </div>
 @endsection

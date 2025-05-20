@@ -6,7 +6,7 @@ register
 @endsection
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/register.css') }}">
+<link rel="stylesheet" href="{{ asset('css/pages/register.css') }}">
 @endsection
 
 @section('header')

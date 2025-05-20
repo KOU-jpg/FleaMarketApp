@@ -28,7 +28,6 @@ class DatabaseSeeder extends Seeder
         // その後、各Seederを呼び出す
         $this->call([
             UserSeeder::class,
-            ProfileImagesTableSeeder::class,
             ProfilesTableSeeder::class,
             ConditionsTableSeeder::class,
             CategoriesTableSeeder::class,

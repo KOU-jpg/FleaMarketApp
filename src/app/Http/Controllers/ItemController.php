@@ -12,61 +12,67 @@ use App\Models\Comment;
 
 class ItemController extends Controller
 {
-    public function address()  { return view('order/edit_address');}
-
-    public function store(ExhibitionRequest $request)
+//商品一覧ページ表示
+    public function index(Request $request)
     {
-        $item = new Item();
-        $item->user_id = Auth::id();
-        $item->name = $request->product_name;
-        $item->description = $request->description;
-        $item->brand = $request->brand;
-        $item->price = $request->price;
-        $item->condition_id = $request->condition;
-        $item->save();
+        $userId = auth()->id();
+        $keyword = $request->input('keyword');
+        $page = $request->query('page', 'recommend');
 
-        // ★ここがポイント！カテゴリーIDを配列に変換してattach
-        if ($request->filled('category')) {
-            $categories = is_array($request->category)
-                ? $request->category
-                : array_filter(explode(',', $request->category));
-            $item->categories()->attach($categories);
+        // 共通検索条件（テーブル名を明示）
+        $applyConditions = function ($query) use ($userId, $keyword) {
+            $query->where('items.user_id', '!=', $userId) // ← ここを修正
+                ->when($keyword, function ($q) use ($keyword) {
+                    $q->where(function ($subQ) use ($keyword) {
+                        $subQ->where('items.name', 'like', "%{$keyword}%") // ← テーブル名追加
+                            ->orWhereHas('categories', function ($categoryQ) use ($keyword) {
+                                $categoryQ->where('name', 'like', "%{$keyword}%");
+                            });
+                    });
+                });
+        };
+
+        // タブ切り替え処理
+        if ($page === 'mylist' && auth()->check()) {
+            $items = auth()->user()->favorites()
+                ->with('images', 'categories')
+                ->where($applyConditions)
+                ->latest('items.created_at') // ← テーブル名追加
+                ->get();
+        } else {
+            $items = Item::with('images', 'categories')
+                ->where($applyConditions)
+                ->latest()
+                ->get();
         }
 
-        // 画像保存
-        $path = $request->file('product_image')->store('Images/Item_images', 'public');
-        $itemImage = new ItemImage();
-        $itemImage->item_id = $item->id;
-        $itemImage->path = $path;
-        $itemImage->order = 1;
-        $itemImage->save();
-
-        return redirect()->route('mypage');
+        return view('items.index', compact('items', 'keyword', 'page'));
     }
-    public function show(Item $item)
+
+//商品詳細ページを表示
+    public function detail(Item $item)
     {
         // 商品の関連データを事前にロード
         $item->load([
-            'images',                // 商品画像
-            'categories',            // カテゴリ（多対多）
-            'condition',             // 商品状態
-            'user.profile',          // 出品者プロフィール
-            'user.profileImage',     // 出品者プロフィール画像
+            'images',
+            'categories',
+            'condition',
+            'user.profile', // プロフィール画像もここに含まれる
         ]);
 
-        // コメントと、そのユーザー＆ユーザーのプロフィール画像をまとめてロード
+        // コメントと、そのユーザー＆ユーザーのプロフィールをまとめてロード
         $comments = $item->comments()
-            ->with(['user.profileImage'])
+            ->with(['user.profile'])
             ->oldest()
             ->get();
 
-        return view('main.detail', [
+        return view('items.detail', [
             'item' => $item,
             'comments' => $comments
         ]);
     }
 
-
+//コメント投稿処理
     public function store_comment(CommentRequest $request)
     {
         // バリデーション
@@ -83,11 +89,9 @@ class ItemController extends Controller
         ]);
 
         // 元のページにリダイレクト
-        return redirect()->route('items.show', $validated['item_id'])
+        return redirect()->route('items.detail', $validated['item_id'])
                          ->with('success', 'コメントを投稿しました');
     }
-
-
 }
 
 
