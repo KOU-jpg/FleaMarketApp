@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\ItemImage;
+use App\Models\Comment;
 use App\Http\Requests\ExhibitionRequest;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Comment;
+
 
 
 class SellController extends Controller

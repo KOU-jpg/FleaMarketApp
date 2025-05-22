@@ -54,7 +54,7 @@
               <button class="purchase-btn soldout" disabled>売り切れました</button>
           @else
           @auth
-              <a href="{{ route('purchase.show', ['item' => $item->id]) }}" class="purchase-btn">購入手続きへ</a>
+              <a href="{{ route('purchase.show', ['item_id' => $item->id]) }}" class="purchase-btn">購入手続きへ</a>
           @else
               <a href="{{ route('login.form') }}" class="purchase-btn">ログインして購入手続きへ</a>
           @endauth

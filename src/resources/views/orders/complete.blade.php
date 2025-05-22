@@ -1,3 +1,5 @@
+<!-- 商品購入処理確認画面 -->
+
 @extends('layouts.app')
 
 @section('title')
@@ -14,7 +16,6 @@
 @section('content')
     <div class="background-text">Thankyou</div>
 
-    <!-- 表示されるメインコンテンツ -->
     <div class="content">
         <h1>ご購入ありがとうございました</h1>
         <a href="{{ route('items.index')}}" class="content-button">ホーム画面へ</a>

@@ -10,14 +10,9 @@ use App\Http\Controllers\SellController;
 
 
 // 商品一覧（トップ画面）
+
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
 
-// 商品一覧（マイリスト）※認証必須
-//Route::get('/', [ItemController::class, 'mylist'])
-//    ->name('items.mylist')
-//   ->middleware('auth')
-//    ->where('tab', 'mylist')
-//    ->defaults('tab', 'mylist');
 
 // 会員登録
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
@@ -34,7 +29,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
 
 // 商品詳細
-Route::get('/items/{item}', [ItemController::class, 'detail'])->name('items.detail');
+Route::get('/item/{item_id}', [ItemController::class, 'detail'])->name('items.detail');
 
 // 商品購入（認証必須）
 Route::middleware('auth')->group(function () {
@@ -46,14 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/favorite/toggle', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
 
     // 商品購入画面
-    Route::get('/purchase/{item}', [OrderController::class, 'show'])->name('purchase.show');
+    Route::get('/purchase/{item_id}', [OrderController::class, 'show'])->name('purchase.show');
     //購入処理
-    Route::post('/purchase/{item}', [OrderController::class, 'purchase'])->name('purchase');
+    Route::post('/purchase/{item_id}', [OrderController::class, 'purchase'])->name('purchase');
     Route::get('/thanks', [OrderController::class, 'thanks'])->name('thanks');
 
     // 住所変更ページ
-    Route::get('/purchase/address/{item}', [OrderController::class, 'showAddressForm'])->name('address.form');
-    Route::post('/purchase/address/{item}', [OrderController::class, 'updateAddress'])->name('address.update');
+    Route::get('/purchase/address/{item_id}', [OrderController::class, 'showAddressForm'])->name('address.form');
+    Route::post('/purchase/address/{item_id}', [OrderController::class, 'updateAddress'])->name('address.update');
 
     // 商品出品
     Route::get('/sell', [SellController::class, 'showForm'])->name('sell.form');

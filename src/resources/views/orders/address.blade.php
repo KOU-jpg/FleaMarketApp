@@ -1,3 +1,4 @@
+<!-- 送付先住所変更画面 -->
 @extends('layouts.app')
 
 @section('title')
@@ -14,7 +15,7 @@
 @section('content')
     <div class="profile-container">
         <h2>配送先住所の編集</h2>
-        <form method="POST" action="{{ route('address.update', ['item' => $item->id]) }}" enctype="multipart/form-data"
+        <form method="POST" action="{{ route('address.update', ['item_id' => $item->id]) }}" enctype="multipart/form-data"
             novalidate>
             @csrf
             <input type="hidden" name="name" value="{{ old('name', Auth::user()->name) }}">
@@ -47,7 +48,7 @@
             </div>
             <button type="submit" class="update-btn">更新する</button>
         </form>
-        <a href="{{ route('purchase.show', ['item' => $item->id]) }}" class="back-btn">購入ページへ</a>
+        <a href="{{ route('purchase.show', ['item_id' => $item->id]) }}" class="back-btn">購入ページへ</a>
 
     </div>
 @endsection

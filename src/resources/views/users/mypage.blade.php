@@ -1,4 +1,4 @@
-<!-- マイページ画面 -->
+<!-- プロフィール画面 -->
 @extends('layouts.app')
 
 @section('title')

@@ -11,6 +11,6 @@ class Profile extends Model
     use HasFactory;
     
     protected $fillable = [
-    'user_id', 'postal_code', 'address', 'building',
+    'user_id', 'postal_code', 'address', 'building', 'image_path'
 ];
 }

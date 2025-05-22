@@ -1,4 +1,4 @@
-<!-- メール認証確認画面 -->
+<!-- メール認証画面 -->
 @extends('layouts.app')
 
 @section('title')

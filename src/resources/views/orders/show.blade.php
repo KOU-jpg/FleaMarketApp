@@ -1,3 +1,4 @@
+<!-- 商品購入画面 -->
 @extends('layouts.app')
 
 @section('title')
@@ -12,7 +13,7 @@
 @endsection
 
 @section('content')
-    <form method="POST" action="{{ route('purchase', ['item' => $item->id]) }}" novalidate>
+    <form method="POST" action="{{ route('purchase', ['item_id' => $item->id]) }}" novalidate>
         @csrf
         <div class="purchase-container">
             <!-- 左カラム -->
@@ -48,7 +49,7 @@
                 <div class="address-section">
                     <div class="title-row">
                         <div class="section-title">配送先</div>
-                        <a href="{{ route('address.form', ['item' => $item->id]) }}" class="address-change">変更する</a>
+                        <a href="{{ route('address.form', ['item_id' => $item->id]) }}" class="address-change">変更する</a>
                         @error('address_id')
                             <div class="error-message">{{ $message }}</div>
                         @enderror

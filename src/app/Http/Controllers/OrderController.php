@@ -12,19 +12,20 @@ use Carbon\Carbon;
 class OrderController extends Controller
 {
 //商品購入ページ表示
-    public function show(Item $item)
+    public function show(Item $item_id)
     {
-        $item->load('images'); 
+        $item_id->load('images');
         $address = Auth::user()->profile ?? null;
         return view('orders.show', [
-            'item' => $item,
+            'item' => $item_id,
             'address' => $address,
         ]);
     }
 
 //購入処理
-    public function purchase(PurchaseRequest $request, Item $item)
+    public function purchase(PurchaseRequest $request, $item_id)
     {
+        $item = Item::findOrFail($item_id);
         // 支払い方法を取得
         $paymentMethod = $request->input('payment_method');
             // sold_atに現在時刻をセットし売り切れ状態にする
@@ -41,21 +42,23 @@ class OrderController extends Controller
 //商品購入完了ページ表示
     public function thanks()
     {
-        return view('order.complete');
+        return view('orders.complete');
     }
 
 //住所変更ページ表示
-public function showAddressForm(Item $item)
-{
-    $address = Auth::user()->profile ?? null;
-    return view('orders.address', [
-        'address' => $address,
-        'item' => $item,
-    ]);
-}
+    public function showAddressForm($item_id)
+    {
+        $item = Item::findOrFail($item_id);
+        $address = Auth::user()->profile ?? null;
+        return view('orders.address', [
+            'address' => $address,
+            'item' => $item,
+        ]);
+    }
 //送付先住所更新処理
-public function updateAddress(AddressRequest $request, Item $item)
-{
+    public function updateAddress(AddressRequest $request, $item_id)
+    {
+        $item = Item::findOrFail($item_id);
     $user = Auth::user();
     $validated = $request->validated();
 
@@ -67,5 +70,5 @@ public function updateAddress(AddressRequest $request, Item $item)
 
     // 住所変更後に購入ページに戻す
     return redirect()->route('purchase.show', ['item' => $item->id]);
-}
+    }
 }

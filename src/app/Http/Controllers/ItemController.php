@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\ItemImage;
+use App\Models\Comment;
 use App\Http\Requests\ExhibitionRequest;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Comment;
+
 
 class ItemController extends Controller
 {
@@ -50,24 +51,25 @@ class ItemController extends Controller
     }
 
 //商品詳細ページを表示
-    public function detail(Item $item)
+
+    public function detail(Item $item_id)
     {
         // 商品の関連データを事前にロード
-        $item->load([
+        $item_id->load([
             'images',
             'categories',
             'condition',
-            'user.profile', // プロフィール画像もここに含まれる
+            'user.profile',
         ]);
 
         // コメントと、そのユーザー＆ユーザーのプロフィールをまとめてロード
-        $comments = $item->comments()
+        $comments = $item_id->comments()
             ->with(['user.profile'])
             ->oldest()
             ->get();
 
         return view('items.detail', [
-            'item' => $item,
+            'item' => $item_id,
             'comments' => $comments
         ]);
     }
@@ -75,21 +77,16 @@ class ItemController extends Controller
 //コメント投稿処理
     public function store_comment(CommentRequest $request)
     {
-        // バリデーション
-        $validated = $request->validate([
-            'comment' => 'required|max:1000',
-            'item_id' => 'required|exists:items,id'
-        ]);
 
         // コメント保存
         Comment::create([
             'user_id' => auth()->id(),
-            'item_id' => $validated['item_id'],
-            'comment' => $validated['comment']
+            'item_id' => $request['item_id'],
+            'comment' => $request['comment']
         ]);
 
         // 元のページにリダイレクト
-        return redirect()->route('items.detail', $validated['item_id'])
+        return redirect()->route('items.detail', $request['item_id'])
                          ->with('success', 'コメントを投稿しました');
     }
 }

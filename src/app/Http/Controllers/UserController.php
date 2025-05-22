@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Item;
+use App\Models\Profile;
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\AddressRequest;
-use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Models\Item;
+
 
 class UserController extends Controller
 {
@@ -46,40 +47,50 @@ class UserController extends Controller
     }
 
 //プロフィール変更処理
-    public function updateProfile(ProfileRequest $request)
+    public function updateProfile(Request $request)
     {
-        $user = auth()->user();
+    $user = auth()->user();
 
-        DB::transaction(function () use ($request, $user) {
-            $profileData = [
-                'postal_code' => $request->input('postal_code'),
-                'address' => $request->input('address'),
-                'building' => $request->input('building'),
-            ];
+    // ProfileRequestのバリデーションルールでチェック
+    $request->validate((new ProfileRequest())->rules(), (new ProfileRequest())->messages());
 
-            // プロフィール画像の更新処理
-            if ($request->hasFile('profile_image')) {
-                $image = $request->file('profile_image');
-                $path = $image->store('Images/profile_images', 'public');
-                        // シーディング用画像かどうかを判定
-                        if ($user->profile && $user->profile->image_path) {
-                            if (!Str::startsWith($user->profile->image_path, 'Images/profile_images_sample/')) {
-                                Storage::disk('public')->delete($user->profile->image_path);
-                            }
-                        }
-                $profileData['image_path'] = $path;
+    // AddressRequestのバリデーションルールでチェック
+    $request->validate((new AddressRequest())->rules(), (new AddressRequest())->messages());
+
+    DB::transaction(function () use ($request, $user) {
+        $profileData = [
+            'postal_code' => $request->input('postal_code'),
+            'address' => $request->input('address'),
+            'building' => $request->input('building'),
+        ];
+
+        // プロフィール画像の更新処理
+        if ($request->hasFile('profile_image')) {
+            $image = $request->file('profile_image');
+            // 新しい画像を profile_images に保存
+            $path = $image->store('Images/profile_images', 'public');
+        
+            // 古い画像が profile_images 内にあれば削除（profile_images_sample 内は削除しない）
+            if ($user->profile && $user->profile->image_path) {
+                // サンプル画像でなければ削除
+                if (Str::startsWith($user->profile->image_path, 'Images/profile_images/')) {
+                    Storage::disk('public')->delete($user->profile->image_path);
                 }
+                // サンプル画像（profile_images_sample）は削除しない
+            }
+        
+            $profileData['image_path'] = $path;
+        }
+        // ユーザー名更新
+        $user->name = $request->input('name');
+        $user->save();
 
-            // ユーザー名更新
-            $user->name = $request->input('name');
-            $user->save();
-
-            // プロフィール情報更新（画像含む）
-            Profile::updateOrCreate(
-                ['user_id' => $user->id],
-                $profileData
-            );
-        });
-        return redirect()->route('mypage');
+        // プロフィール情報更新（画像含む）
+        Profile::updateOrCreate(
+            ['user_id' => $user->id],
+            $profileData
+        );
+    });
+    return redirect()->route('mypage');
     }
 }
