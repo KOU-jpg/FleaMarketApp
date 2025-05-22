@@ -19,7 +19,10 @@
           メール認証を完了してください。
         </p>
         <button class="verify-btn">認証はこちらから</button>
-        <a href="/" class="resend-link">認証メールを再送する</a>
+        <form method="POST" action="{{ route('verification.send') }}">
+          @csrf
+          <button type="submit" class="resend-link">認証メールを再送する</button>
+        </form>
       </div>
 
 @endsection

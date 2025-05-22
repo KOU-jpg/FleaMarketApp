@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Auth\Events\Registered;
 
 
 class AuthController extends Controller
@@ -21,8 +22,10 @@ class AuthController extends Controller
     $form = $request->all();
     $form['password'] = Hash::make($form['password']);
     $user = User::create($form);
-    Auth::login($user);
-    return redirect()->route('mypage.profile.edit');}
+    // 認証メール送信
+    event(new Registered($user));
+    auth()->login($user);
+    return redirect()->route('verifyEmail');}
 
 //ログインページ表示
 public function showLoginForm()  {  return view('auth/login');  }
@@ -49,5 +52,5 @@ public function showLoginForm()  {  return view('auth/login');  }
   }
 
 //メール認証ページ表示
-public function verifyEmail()  { return view('auth/email_verify');  }
+public function verifyEmail()  { return view('auth/verify-email');  }
 }

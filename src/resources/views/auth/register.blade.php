@@ -14,7 +14,7 @@ register
 
 @section('content')
   <h2>会員登録</h2>
-   <form class="form" action="/register" method="post" novalidate>
+   <form action="/register" method="post" novalidate>
     @csrf
     <label for="name">
         お名前

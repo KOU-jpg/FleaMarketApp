@@ -20,21 +20,21 @@
       @yield('header')
       <a href="{{ route('items.index')}}">
       <img src="{{ asset('images/logo.svg') }}" class="header__image" alt="coachtechロゴ"></a>
-      @if (Auth::check())
       <form class="header-search" method="GET" action="{{ route('items.index') }}">
         <input type="text" name="keyword" placeholder="なにをお探しですか？" value="{{ request('keyword') }}">
       </form>
       <nav class="header-nav">
+          @if (Auth::check())
           <form action="{{ route('logout') }}" method="POST" style="display:inline;">
           @csrf
           <button type="submit" class="nav-link" style="background:none;border:none;padding:0;cursor:pointer;">
               ログアウト
           </button>
+          @endif
           </form>
         <a href="{{ route('mypage')  }}" class="nav-link">マイページ</a>
         <a href="{{ route('sell.form')  }}" class="nav-link exhibit-btn">出品</a>
       </nav>
-      @endif
     </div>
   </header>
 

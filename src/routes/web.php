@@ -1,18 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SellController;
+use Illuminate\Support\Facades\Auth;
 
+
+// メール認証付き認証ルート
+Auth::routes(['verify' => true]);
 
 // 商品一覧（トップ画面）
-
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
 
+// 商品詳細
+Route::get('/item/{item_id}', [ItemController::class, 'detail'])->name('items.detail');
 
 // 会員登録
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register.form');
@@ -25,18 +31,15 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 //ログアウト
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// メール認証（認証必須 ※トークン等で判定）
-Route::get('/verify-email', [AuthController::class, 'verifyEmail']);
+// メール認証
+Route::get('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('auth')->name('verifyEmail');
 
-// 商品詳細
-Route::get('/item/{item_id}', [ItemController::class, 'detail'])->name('items.detail');
-
-// 商品購入（認証必須）
-Route::middleware('auth')->group(function () {
+//  ログイン＆メール認証済みユーザーのみアクセス可
+Route::middleware(['auth', 'verified'])->group(function () {
     // マイリスト（ログインユーザーのみ）
     Route::get('/mylist', [ItemController::class, 'mylist'])->name('items.mylist');
     //コメント投稿処理
-    Route::post('/comments', [ItemController::class, 'store_comment'])->name('comments.store')->middleware('auth');
+    Route::post('/comments', [ItemController::class, 'store_comment'])->name('comments.store');
     //お気に入り保存処理
     Route::post('/favorite/toggle', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
 
@@ -61,15 +64,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/mypage/profile', [UserController::class, 'editProfile'])->name('mypage.profile.edit');
     Route::post('/mypage/profile', [UserController::class, 'updateProfile'])->name('mypage.profile.update');
 
-    // プロフィール画面_購入した商品一覧
-    //Route::get('/mypage', [UserController::class, 'buyList'])
-    //    ->name('mypage.buy')
-    //    ->where('tab', 'buy')
-    //    ->defaults('tab', 'buy');
-
-    // プロフィール画面_出品した商品一覧
-    //Route::get('/mypage', [UserController::class, 'sellList'])
-    //    ->name('mypage.sell')
-    //    ->where('tab', 'sell')
-    //    ->defaults('tab', 'sell');
 });
+
+
+//メール再送信
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');

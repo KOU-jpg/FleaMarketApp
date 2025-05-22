@@ -14,7 +14,7 @@ login
 
 @section('content')
 <h2>ログイン</h2>
-<form class="form" action="/login" method="post" novalidate>
+<form action="/login" method="post" novalidate>
 @csrf
   <label for="email">
       メールアドレス
