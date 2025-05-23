@@ -29,8 +29,8 @@
     </section>
 
     <nav class="pages">
-        <a href="{{ route('mypage', ['page' => 'buy']) }}" class="page {{ $page === 'buy' ? 'active' : '' }}">購入した商品</a>
-        <a href="{{ route('mypage', ['page' => 'sell']) }}" class="page {{ $page === 'sell' ? 'active' : '' }}">出品した商品</a>
+        <a href="{{ route('mypage', ['page' => 'buy']) }}" class="page {{ ($page ?? 'buy') === 'buy' ? 'active' : '' }}">購入した商品</a>
+        <a href="{{ route('mypage', ['page' => 'sell']) }}" class="page {{ ($page ?? '') === 'sell' ? 'active' : '' }}">出品した商品</a>
     </nav>
     <hr>
 
@@ -52,12 +52,11 @@
                 </div>
             </a>
         @empty
-            <div class="empty-message">
-                @if($page === 'buy')
-
-                @else
-
-                @endif
+    <div class="empty-message">
+        @if(($page ?? 'buy') === 'buy')
+        @else
+        @endif
+    </div>
             </div>
         @endforelse
     </section>

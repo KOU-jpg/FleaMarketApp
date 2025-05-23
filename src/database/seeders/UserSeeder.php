@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class UserSeeder extends Seeder
 {
@@ -22,6 +23,7 @@ class UserSeeder extends Seeder
         'password' => bcrypt('password'),
         'created_at' => now(),
         'updated_at' => now(),
+        'email_verified_at' => Carbon::now(),
     ]);
 
     DB::table('users')->insert([
@@ -31,6 +33,7 @@ class UserSeeder extends Seeder
         'password' => bcrypt('password'),
         'created_at' => now(),
         'updated_at' => now(),
+        'email_verified_at' => Carbon::now(),
     ]);
 
     DB::table('users')->insert([
@@ -40,6 +43,7 @@ class UserSeeder extends Seeder
         'password' => bcrypt('password'),
         'created_at' => now(),
         'updated_at' => now(),
+        'email_verified_at' => Carbon::now(),
     ]);}
 
 }

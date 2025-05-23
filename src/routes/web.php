@@ -11,8 +11,6 @@ use App\Http\Controllers\SellController;
 use Illuminate\Support\Facades\Auth;
 
 
-// メール認証付き認証ルート
-Auth::routes(['verify' => true]);
 
 // 商品一覧（トップ画面）
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
@@ -31,8 +29,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 //ログアウト
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// メール認証
-Route::get('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('auth')->name('verifyEmail');
 
 //  ログイン＆メール認証済みユーザーのみアクセス可
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -67,8 +63,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 
-//メール再送信
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('message', 'Verification link sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+// 認証案内ページ
+Route::get('/verify-email', [AuthController::class, 'verifyEmailNotice'])->middleware('auth')->name('verification.notice');
+
+// 認証リンク（メール内のリンクがここに飛んでくる）
+Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+// 認証メール再送信
+Route::post('/verify-email/resend', [AuthController::class, 'resendVerificationEmail'])
+    ->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');

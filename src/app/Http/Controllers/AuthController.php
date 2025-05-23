@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 
 class AuthController extends Controller
@@ -25,7 +27,7 @@ class AuthController extends Controller
     // 認証メール送信
     event(new Registered($user));
     auth()->login($user);
-    return redirect()->route('verifyEmail');}
+    return redirect()->route('verification.notice');}
 
 //ログインページ表示
 public function showLoginForm()  {  return view('auth/login');  }
@@ -51,6 +53,28 @@ public function showLoginForm()  {  return view('auth/login');  }
     return redirect('/login');
   }
 
-//メール認証ページ表示
-public function verifyEmail()  { return view('auth/verify-email');  }
+
+// 認証案内ページ
+    public function verifyEmailNotice() {
+    return view('auth.verify-email');
+  }
+
+// 認証リンク処理
+  public function verifyEmail(EmailVerificationRequest $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return redirect('/mypage/profile')->with('status', 'Already verified!');
+    }
+    $request->fulfill(); // これでemail_verified_atがセットされる
+    event(new Verified($request->user()));
+    return redirect('/mypage/profile')->with('status', 'Email verified!');
+  }
+
+// 認証メール再送信
+  public function resendVerificationEmail(Request $request) {
+  if ($request->user()->hasVerifiedEmail()) {
+      return redirect('/mypage/profile');
+  }
+  $request->user()->sendEmailVerificationNotification();
+  return back()->with('message', 'Verification link sent!');
+}
 }

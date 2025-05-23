@@ -16,21 +16,22 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
 //マイページを表示
-    public function show(Request $request)
-    {
-        $user = auth()->user();
-        $page = $request->query('page', 'buy'); // デフォルトは「購入した商品」
+public function show(Request $request)
+{
+    $user = auth()->user();
+    $page = $request->query('page', 'buy'); // デフォルトは「購入した商品」
 
-        if ($page === 'buy') {
-            // 購入した商品（例：itemsテーブルにbuyer_idがある場合）
-            $items = Item::where('buyer_id', $user->id)->with('images')->latest()->get();
-        } elseif ($page === 'sell') {
-            // 出品した商品
-            $items = Item::where('user_id', $user->id)->with('images')->latest()->get();
-        } else {
-            // デフォルト（購入した商品）
-            $items = Item::where('buyer_id', $user->id)->with('images')->latest()->get();
-        }
+    if ($page === 'buy') {
+        // 購入した商品
+        $items = Item::where('buyer_id', $user->id)->with('images')->latest()->get();
+    } elseif ($page === 'sell') {
+        // 出品した商品
+        $items = Item::where('user_id', $user->id)->with('images')->latest()->get();
+    } else {
+        // 万が一、どちらでもなければデフォルトで「購入した商品」
+        $items = Item::where('buyer_id', $user->id)->with('images')->latest()->get();
+    }
+
 
         return view('users.mypage', [
             'user' => $user,

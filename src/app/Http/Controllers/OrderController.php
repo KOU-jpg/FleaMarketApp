@@ -69,6 +69,6 @@ class OrderController extends Controller
     $profile->save();
 
     // 住所変更後に購入ページに戻す
-    return redirect()->route('purchase.show', ['item' => $item->id]);
+    return redirect()->route('purchase.show', ['item_id' => $item->id]);
     }
 }

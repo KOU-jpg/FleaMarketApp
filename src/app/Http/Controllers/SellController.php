@@ -9,13 +9,17 @@ use App\Models\Comment;
 use App\Http\Requests\ExhibitionRequest;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
 
 
 
 class SellController extends Controller
 {
 //出品ページ表示
-    public function showForm()  { return view('items.create');  }
+    public function showForm() {
+        $categories = Category::all();
+        return view('items.create', compact('categories'));
+    }
 
 //出品処理
     public function sell(ExhibitionRequest $request)

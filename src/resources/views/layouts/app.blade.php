@@ -20,7 +20,8 @@
       @yield('header')
       <a href="{{ route('items.index')}}">
       <img src="{{ asset('images/logo.svg') }}" class="header__image" alt="coachtechロゴ"></a>
-      <form class="header-search" method="GET" action="{{ route('items.index') }}">
+      <form class="header-search" method="GET"
+      action="{{ ($page ?? '') === 'mylist' ? url('/?page=mylist') : route('items.index') }}">
         <input type="text" name="keyword" placeholder="なにをお探しですか？" value="{{ request('keyword') }}">
       </form>
       <nav class="header-nav">
