@@ -87,3 +87,4 @@ php artisan db:seed
 - Web UI: http://localhost:8025/
     - ブラウザでアクセスし、送信されたメールを確認
 # app-laravel
+# FleaMarketApp
