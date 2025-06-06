@@ -74,13 +74,5 @@
             </div>
             <button type="submit" class="update-btn">更新する</button>
         </form>
-        @if(
-            !empty($user->name) &&
-            !empty(optional($user->profile)->postal_code) &&
-            !empty(optional($user->profile)->address) &&
-            !empty(optional($user->profile)->building)
-        )
-            <a href="{{ route('mypage', ['item' => request('item_id')]) }}" class="back-btn">← 戻る</a>
-        @endif
     </div>
 @endsection

@@ -13,4 +13,10 @@ class Profile extends Model
     protected $fillable = [
     'user_id', 'postal_code', 'address', 'building', 'image_path'
 ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }

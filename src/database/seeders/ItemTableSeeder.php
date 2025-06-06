@@ -16,15 +16,15 @@ class ItemTableSeeder extends Seeder
     {
         $items = [
         [
-            'user_id' => 1,
-            'condition_id' => 1,
-            'name' => '腕時計',
-            'description' => 'スタイリッシュなデザインのメンズ腕時計',
-            'brand' => 'Armani',
-            'price' => 15000,
-            'created_at' => now(),
-            'updated_at' => now(),
-            'category_id' => [1, 3], 
+        'user_id' => 1,
+        'condition_id' => 1,
+        'name' => '腕時計',
+        'description' => 'スタイリッシュなデザインのメンズ腕時計',
+        'brand' => 'Armani',
+        'price' => 15000,
+        'created_at' => now(),
+        'updated_at' => now(),
+        'categories' => [1, 3, 5, 13,], 
         ],
         [
         'user_id' => 1,
@@ -35,7 +35,7 @@ class ItemTableSeeder extends Seeder
         'price' => 5000,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [2],
+        'categories' => [2],
         ],
         [
         'user_id' => 1,
@@ -46,7 +46,7 @@ class ItemTableSeeder extends Seeder
         'price' => 300,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [3],
+        'categories' => [3],
         ],
         [
         'user_id' => 2,
@@ -57,7 +57,7 @@ class ItemTableSeeder extends Seeder
         'price' => 4000,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [1], 
+        'categories' => [1], 
         ],
         [
         'user_id' => 2,
@@ -68,7 +68,7 @@ class ItemTableSeeder extends Seeder
         'price' => 45000,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [2], 
+        'categories' => [2], 
         ],
         [
         'user_id' => 2,
@@ -79,7 +79,7 @@ class ItemTableSeeder extends Seeder
         'price' => 8000,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [2], 
+        'categories' => [2], 
         ],
         [
         'user_id' => 3,
@@ -90,7 +90,7 @@ class ItemTableSeeder extends Seeder
         'price' => 3500,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [1,7] 
+        'categories' => [1,7] 
         ],
         [
         'user_id' => 3,
@@ -101,7 +101,7 @@ class ItemTableSeeder extends Seeder
         'price' => 500,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [4] 
+        'categories' => [4] 
         ],
         [
         'user_id' => 3,
@@ -112,7 +112,7 @@ class ItemTableSeeder extends Seeder
         'price' => 4000,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [4] 
+        'categories' => [4]
         ],
         [
         'user_id' => 1,
@@ -123,16 +123,16 @@ class ItemTableSeeder extends Seeder
         'price' => 2500,
         'created_at' => now(),
         'updated_at' => now(),
-        'category_id' => [1] 
+        'categories' => [1]
         ]
     ];
 
     foreach ($items as $itemData) {
-    $category_ids = $itemData['category_id'];
-    unset($itemData['category_id']);
+        $categoryIds = $itemData['categories'];
+        unset($itemData['categories']);
 
-    $item = Item::create($itemData);
-    $item->categories()->attach($category_ids);
+        $item = Item::create($itemData);
+        $item->categories()->attach($categoryIds);
     }
     }
 }

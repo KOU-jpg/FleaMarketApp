@@ -9,12 +9,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-width: 0;
 }
 
 .header-search {
     flex: 1;
     display: flex;
     justify-content: center;
+    min-width: 0;
 }
 
 .header-search input[type="text"] {
@@ -26,12 +28,20 @@
     font-size: 18px;
     background: #fff;
     margin: 0 32px;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .header-nav {
     display: flex;
     align-items: center;
     gap: 16px;
+    flex-wrap: nowrap;
+    /* 横並びを強制 */
+    min-width: 180px;
+    /* 横幅を確保（必要に応じて調整） */
+    white-space: nowrap;
+    /* テキスト折り返し防止 */
 }
 
 .nav-link {
@@ -40,12 +50,14 @@
     font-size: 16px;
     padding: 0 6px;
     transition: color 0.2s;
+    white-space: nowrap;
+    /* テキスト折り返し防止 */
+    min-width: 0;
 }
 
 .nav-link:hover {
     color: #ff6b6b;
 }
-
 .exhibit-btn {
     background: #fff;
     color: #111;
@@ -56,6 +68,9 @@
     transition: background 0.2s, color 0.2s;
     border: none;
     text-decoration: none;
+    white-space: nowrap;
+    /* テキスト折り返し防止 */
+    min-width: 0;
 }
 
 .exhibit-btn:hover {
@@ -63,4 +78,84 @@
     color: #fff;
 }
 
+/* --- レスポンシブ対応 --- */
 
+/* PC幅 (1400px以上) */
+@media (min-width: 1400px) {
+    .header__inner {
+        max-width: 100%;
+    }
+
+    .header-search input[type="text"] {
+        width: 480px;
+    }
+}
+
+/* タブレット幅 (768px〜850px) */
+@media (max-width: 850px) and (min-width: 768px) {
+    .header__inner {
+        padding: 12px 10px;
+        gap: 12px;
+    }
+
+    .header-search input[type="text"] {
+        width: 320px;
+        font-size: 16px;
+        margin: 0 8px;
+    }
+
+    .header-nav {
+        gap: 8px;
+        min-width: 140px;
+    }
+
+    .nav-link {
+        font-size: 15px;
+        padding: 0 4px;
+    }
+
+    .exhibit-btn {
+        padding: 5px 10px;
+        font-size: 15px;
+        margin-left: 4px;
+    }
+}
+
+/* スマホ幅 (〜767px) */
+@media (max-width: 767px) {
+    .header__inner {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 8px 4px;
+        gap: 8px;
+    }
+
+    .header-search {
+        justify-content: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .header-search input[type="text"] {
+        width: 100%;
+        font-size: 15px;
+        margin: 0;
+    }
+
+    .header-nav {
+        justify-content: flex-start;
+        gap: 6px;
+        min-width: 0;
+        overflow-x: auto;/* 入りきらない場合は横スクロール */
+    }
+
+    .nav-link {
+        font-size: 14px;
+        padding: 0 2px;
+    }
+
+    .exhibit-btn {
+        font-size: 14px;
+        padding: 4px 8px;
+        margin-left: 2px;
+    }
+}

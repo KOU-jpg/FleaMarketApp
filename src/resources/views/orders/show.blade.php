@@ -56,7 +56,7 @@
                     </div>
                     <div class="address-info">
                         〒 {{ $address->postal_code ?? 'XXX-YYYY' }}<br>
-                        {{ $address->address ?? 'ここには住所が入ります' }}<br>
+                        {{ $address->address ?? '住所を登録してください' }}<br>
                         {{ $address->building ?? '' }}
                         <input type="hidden" name="address_id" value="{{ $address->id ?? '' }}">
                     </div>

@@ -16,11 +16,11 @@
 @section('content')
 
 <nav class="pages">
-    <a href="{{ url('/' . (request('keyword') ? '?keyword=' . urlencode(request('keyword')) : '')) }}"
-       class="page {{ ($page ?? 'recommend') === 'recommend' ? 'active' : '' }}">おすすめ</a>
-    @auth
-    <a href="{{ url('/?page=mylist' . (request('keyword') ? '&keyword=' . urlencode(request('keyword')) : '')) }}"
-       class="page {{ ($page ?? '') === 'mylist' ? 'active' : '' }}">マイリスト</a>
+    <a href="{{ url('/' . (request('keyword') ? '?keyword=' . urlencode(request('keyword')) : '')) }}" class="page {{ ($page ?? 'recommend') === 'recommend' ? 'active' : '' }}">おすすめ</a>
+    @if(Auth::check() && Auth::user()->hasVerifiedEmail())
+    <a href="{{ url('/?page=mylist' . (request('keyword') ? '&keyword=' . urlencode(request('keyword')) : '')) }}" class="page {{ ($page ?? '') === 'mylist' ? 'active' : '' }}">マイリスト</a>
+    @elseif(Auth::check())
+    <a href="http://localhost:8025" target="_blank" class="page" rel="noopener noreferrer">マイリスト</a>
     @else
     <a href="{{ route('login.form') }}" class="page">マイリスト</a>
     @endauth

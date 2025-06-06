@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //コメント投稿処理
     Route::post('/comments', [ItemController::class, 'store_comment'])->name('comments.store');
     //お気に入り保存処理
-    Route::post('/favorite/toggle', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
+    Route::post('/items/{item}/favorite', [FavoriteController::class, 'toggle'])->name('favorites.toggle');
 
     // 商品購入画面
     Route::get('/purchase/{item_id}', [OrderController::class, 'show'])->name('purchase.show');

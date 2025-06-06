@@ -17,7 +17,6 @@ class CreateItemImagesTable extends Migration
     $table->id();
     $table->foreignId('item_id')->constrained()->onDelete('cascade');
     $table->string('path');
-    $table->integer('order')->default(0)->comment('表示順序'); // コメント追加
     $table->timestamps();
 });
     }

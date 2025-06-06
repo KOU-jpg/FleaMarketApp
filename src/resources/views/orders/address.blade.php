@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="{{ asset('css/pages/edit.css') }}">
 @endsection
 
-@section('header')
-@endsection
-
 @section('content')
     <div class="profile-container">
         <h2>配送先住所の編集</h2>
@@ -48,7 +45,5 @@
             </div>
             <button type="submit" class="update-btn">更新する</button>
         </form>
-        <a href="{{ route('purchase.show', ['item_id' => $item->id]) }}" class="back-btn">購入ページへ</a>
-
     </div>
 @endsection

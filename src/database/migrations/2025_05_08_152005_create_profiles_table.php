@@ -14,13 +14,13 @@ class CreateProfilesTable extends Migration
     public function up()
     {
         Schema::create('profiles', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->string('postal_code', 8);
-    $table->string('address');
-    $table->string('building');     $table->timestamps();
-    $table->unique('user_id'); // 1ユーザー1プロファイルを保証
-    $table->string('image_path')->nullable();
+            $table->id();
+            $table->foreignId('user_id')->unique()->constrained(); // unique()追加
+            $table->string('postal_code', 8);
+            $table->string('address');
+            $table->string('building');
+            $table->string('image_path')->nullable();
+            $table->timestamps();
         });
     }
 

@@ -8,14 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     protected $fillable = [
-    'user_id', 'condition_id', 'name', 'description', 'price'
+        'user_id',
+        'buyer_id',
+        'condition_id',
+        'name',
+        'description',
+        'brand',
+        'price',
+        'sold_at',
+        'payment_status',
+        'payment_expiry',
+        'favorite_count',
+        'like_count'
     ];
 
     public function user()    {
         return $this->belongsTo(User::class);    }
 
     public function categories(){
-    return $this->belongsToMany(Category::class, 'category_item');}
+    return $this->belongsToMany(Category::class, 'category_items');}
 
     public function condition()    {
         return $this->belongsTo(Condition::class);    }
@@ -27,7 +38,6 @@ class Item extends Model
     return $this->hasMany(Comment::class);}
 
     public function favorites()    {
-    return $this->hasMany(Favorite::class, 'item_id');}
-    use HasFactory;
-    
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
 }

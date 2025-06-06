@@ -70,7 +70,6 @@ ITEM_IMAGES {
     int id PK
     int item_id FK
     string path
-    int order
     timestamp created_at
     }
 

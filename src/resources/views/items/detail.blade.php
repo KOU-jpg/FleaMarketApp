@@ -5,13 +5,9 @@
 
 @section('css')
       <link rel="stylesheet" href="{{ asset('css/pages/detail.css') }}">
-      <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
 @section('content')
-    <div class="back-to-top-btn">
-        <a href="{{ url('/') }}" class="back-button">← トップに戻る</a>
-    </div>
       <div class="product-detail-container">
         <div class="product-image-area">
         <div class="product-image-box">
@@ -21,7 +17,7 @@
           @if($item->images->count())
               <img src="{{ asset('storage/' . $item->images->first()->path) }}" alt="{{ $item->name }}">
         @else
-              <span>画像なし</span>
+            <span>画像なし</span>
         @endif
         </div>
         </div>
@@ -33,33 +29,34 @@
           <span class="tax-in">（税込）</span>
         </div>
         <div class="product-icons" data-item-id="{{ $item->id }}">
-          <button type="button"
-          class="icon-star {{ auth()->check() && $item->favorites()->where('user_id', auth()->id())->exists() ? 'active' : '' }}"
-          aria-pressed="{{ auth()->check() && $item->favorites()->where('user_id', auth()->id())->exists() ? 'true' : 'false' }}"
-          aria-label="お気に入り登録">
-          ☆<span class="icon-count">{{ $item->favorite_count ?? 0 }}</span>
-          </button>
+          <form action="{{ route('favorites.toggle', $item->id) }}" method="POST" style="display:inline;">
+              @csrf
+              <button type="submit"
+                  class="icon-star {{ auth()->check() && $item->favorites()->where('user_id', auth()->id())->exists() ? 'active' : '' }}"
+                  aria-pressed="{{ auth()->check() && $item->favorites()->where('user_id', auth()->id())->exists() ? 'true' : 'false' }}"
+                  aria-label="お気に入り登録">
+                  ☆<span class="icon-count">{{ $item->favorites()->count() }}</span>
+              </button>
+          </form>
           <span class="icon-comment" aria-label="コメント数">
           💬<span class="icon-count">{{ $item->comments()->count() }}</span>
           </span>
         </div>
         <div id="favorite-error-message" style="color: red; margin-top: 8px; display: none;"></div>
-        {{-- Laravelの値をJSへ --}}
-        <script>
-          window.LaravelIsLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
-          window.LaravelLoginUrl = "{{ route('login') }}";
-        </script>
         <div class="product-actions">
           @if($item->sold_at)
               <button class="purchase-btn soldout" disabled>売り切れました</button>
           @else
-          @auth
+          @if(Auth::check() && Auth::user()->hasVerifiedEmail())
               <a href="{{ route('purchase.show', ['item_id' => $item->id]) }}" class="purchase-btn">購入手続きへ</a>
+            @elseif(Auth::check())
+        <a href="http://localhost:8025" target="_blank" class="purchase-btn" rel="noopener noreferrer">メール認証して購入手続きへ</a>
           @else
               <a href="{{ route('login.form') }}" class="purchase-btn">ログインして購入手続きへ</a>
           @endauth
           @endif
         </div>
+        
         <section class="product-description-section">
           <h2 class="section-title">商品説明</h2>
           <div class="product-desc">
@@ -106,9 +103,12 @@
                 @error('comment')
                     <div class="error-message">{{ $message }}</div>
                 @enderror
-
-                @auth
+                @if($item->sold_at)
+                    <button class="comment-submit-btn soldout" disabled>売り切れました</button>
+                @elseif(Auth::check() && Auth::user()->hasVerifiedEmail())
                 <button type="submit" class="comment-submit-btn">コメントを投稿する</button>
+                @elseif(Auth::check())
+                <a href="http://localhost:8025" target="_blank" class="comment-login-btn" rel="noopener noreferrer">メール認証してください</a>
                 @else
                 <a href="{{ route('login.form') }}" class="comment-login-btn">ログインしてコメントする</a>
                 @endauth
@@ -116,8 +116,4 @@
         </section>
         </div>
       </div>
-@endsection
-
-@section('scripts')
-      <script src="{{ asset('js/detail.js') }}"></script>
 @endsection

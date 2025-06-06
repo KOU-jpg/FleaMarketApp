@@ -9,63 +9,27 @@
     <link rel="stylesheet" href="{{ asset('css/pages/create.css') }}">
 @endsection
 
-@section('header')
-
-@endsection
 
 @section('content')
     <h1>商品の出品</h1>
     <form method="POST" action="{{ route('sell') }}" enctype="multipart/form-data" novalidate>
         @csrf
-        <section>
-            <div class="form-group">
-                <div class="form-header">
-                    <label>商品画像</label>
-                    <div class="error-message">
-                        @error('product_image')
-                            {{ $message }}
-                        @enderror
-                    </div>
+    <section>
+        <div class="form-group">
+            <div class="form-header">
+                <label>商品画像</label>
+                <div class="error-message">
+                    @error('product_image')
+                        {{ $message }}
+                    @enderror
                 </div>
-                <div class="image-upload-box" id="image-upload-box">
-                    <div id="preview" style="width:100%; display:flex; justify-content:center; align-items:center;"></div>
-                    <input id="product-image" name="product_image" type="file" accept="image/*" style="display:none;">
-                </div>
-                <button type="button" class="image-upload-btn" id="customBtn" style="display:block; margin:0 auto;">
-                    画像を選択する
-                </button>
             </div>
-
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const input = document.getElementById('product-image');
-                    const button = document.getElementById('customBtn');
-                    const preview = document.getElementById('preview');
-
-                    // ファイル選択時の処理（プレビュー表示のみ）
-                    input.addEventListener('change', (e) => {
-                        preview.innerHTML = '';
-                        const file = e.target.files[0];
-                        if (!file) return;
-
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            preview.appendChild(img);
-                            button.textContent = '画像を変更する';
-                        };
-                        reader.readAsDataURL(file);
-                    });
-
-                    // ボタンクリックでファイル選択ダイアログを開く
-                    button.addEventListener('click', () => {
-                        input.click();
-                    });
-                });
-            </script>
-        </section>
-
+            <div class="image-upload-box">
+                <label for="product-image" class="custom-upload-btn">画像を選択する</label>
+                <input type="file" id="product-image" name="product_image" accept="image/*" hidden>
+            </div>
+        </div>
+    </section>
 
         <section>
             <h2>商品の詳細</h2>
@@ -79,49 +43,15 @@
                         @enderror
                     </div>
                 </div>
-                <div class="category-tags">
-                    @foreach($categories as $category)
-                        <button type="button"
-                            class="category-tag{{ (is_array(old('category')) && in_array($category->id, old('category', []))) ? ' selected' : '' }}"
-                            data-id="{{ $category->id }}">
-                            {{ $category->name }}
-                        </button>
-                    @endforeach
-                </div>
-                <input type="hidden" name="category" id="category"
-                    value="{{ old('category') ? implode(',', (array) old('category')) : '' }}">
-            </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const tags = document.querySelectorAll('.category-tag');
-                    const hidden = document.getElementById('category');
-                    let selectedIds = hidden.value ? hidden.value.split(',').filter(Boolean) : [];
-
-                    // 初期表示時のselected
-                    tags.forEach(tag => {
-                        if (selectedIds.includes(tag.dataset.id)) {
-                            tag.classList.add('selected');
-                        }
-                    });
-
-                    tags.forEach(tag => {
-                        tag.addEventListener('click', function () {
-                            const id = this.dataset.id;
-                            if (this.classList.contains('selected')) {
-                                // 選択解除
-                                this.classList.remove('selected');
-                                selectedIds = selectedIds.filter(val => val !== id);
-                            } else {
-                                // 選択
-                                this.classList.add('selected');
-                                selectedIds.push(id);
-                            }
-                            // hiddenにセット（カンマ区切り）
-                            hidden.value = selectedIds.join(',');
-                        });
-                    });
-                });
-            </script>
+<div class="category-tags">
+    @foreach($categories as $category)
+        <label class="category-checkbox-label">
+            <input type="checkbox" name="category[]" value="{{ $category->id }}"
+                {{ is_array(old('category')) && in_array($category->id, old('category', [])) ? 'checked' : '' }}>
+            <span class="category-tag">{{ $category->name }}</span>
+        </label>
+    @endforeach
+</div>
 
 
             <div class="form-group">

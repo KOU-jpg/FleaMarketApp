@@ -71,14 +71,6 @@ main {
     user-select: none;
 }
 
-.purchase-btn.soldout {
-    background: #bbb !important;
-    color: #fff !important;
-    cursor: not-allowed;
-    border: none;
-    opacity: 0.7;
-}
-
 .product-info-area {
     padding: 5px 12px;
     display: flex;
@@ -143,7 +135,6 @@ main {
 
 .icon-star.active {
     color: #FFD700;
-    /* アクティブ時は黄色 */
     font-weight: bold;
 }
 
@@ -172,6 +163,15 @@ main {
 .purchase-btn:hover {
     background: #ff3b2e;        /* ホバー時の色 */
 }
+
+.purchase-btn.soldout {
+    background: #bbb !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    border: none;
+    opacity: 0.7;
+}
+
 .section-title {
     font-size: 16px;
     font-weight: bold;
@@ -193,16 +193,24 @@ main {
     max-width: 370px;
     width:100%;
     display: flex;
-    flex-wrap: nowrap;     /* 折り返さない */
-    overflow-x: auto;      /* 横スクロール可 */
+    flex-wrap: wrap;       /* 折り返しを許可に変更 */
+    overflow-x: visible;   /* 横スクロールを無効化 */
     gap: 10px;             /* タグ同士の隙間 */
     align-items: center;
     margin-bottom: 4px;
     padding-bottom: 8px;   /* スクロールバーと重ならないように */
 }
+
+/* スライダーの矢印やナビゲーションを非表示（もしある場合） */
+.category-slider-nav,
+.slider-arrow,
+.category-nav {
+    display: none !important;
+}
 .meta-label {
     flex: 0 0 auto;        /* ラベルは固定幅 */
 }
+
 .category-tag {
     display: inline-block;
     background: #eee;
@@ -366,6 +374,14 @@ main {
 .comment-submit-btn:hover {
     background: #ff4d3a;
 
+}
+
+.comment-submit-btn.soldout{
+    background: #bbb !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    border: none;
+    opacity: 0.7;
 }
 
 .comment-login-btn {

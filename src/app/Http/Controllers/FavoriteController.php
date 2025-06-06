@@ -10,34 +10,17 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
-
-    public function toggle(Request $request)
+    public function toggle(Item $item)
     {
-        $userId = Auth::id();
-        $itemId = $request->input('item_id');
-        $action = $request->input('action'); // 'add' or 'remove'
+        $user = auth()->user();
 
-        if (!$itemId || !in_array($action, ['add', 'remove'])) {
-            return response()->json(['success' => false, 'message' => 'Invalid parameters']);
+        if ($user->favorites()->where('item_id', $item->id)->exists()) {
+            $user->favorites()->detach($item->id);
+        } else {
+            $user->favorites()->attach($item->id);
         }
 
-        if ($action === 'add') {
-            Favorite::firstOrCreate([
-                'user_id' => $userId,
-                'item_id' => $itemId,
-            ]);
-        } else { // remove
-            Favorite::where('user_id', $userId)
-                    ->where('item_id', $itemId)
-                    ->delete();
-        }
-
-        // お気に入りの合計数を取得
-        $count = Favorite::where('item_id', $itemId)->count();
-
-        // itemsテーブルのfavorite_countカラムを更新
-        Item::where('id', $itemId)->update(['favorite_count' => $count]);
-
-        return response()->json(['success' => true, 'count' => $count]);
+        return back(); // 直前のページにリダイレクト
     }
+
 }

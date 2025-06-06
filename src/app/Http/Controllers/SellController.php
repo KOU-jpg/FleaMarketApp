@@ -42,11 +42,10 @@ class SellController extends Controller
         }
 
         // 画像保存
-        $path = $request->file('product_image')->store('Images/Item_images', 'public');
+        $path = $request->file('product_image')->store('images/Item_images', 'public');
         $itemImage = new ItemImage();
         $itemImage->item_id = $item->id;
         $itemImage->path = $path;
-        $itemImage->order = 1;
         $itemImage->save();
 
         return redirect()->route('mypage');

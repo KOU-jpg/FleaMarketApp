@@ -69,15 +69,13 @@ public function show(Request $request)
         if ($request->hasFile('profile_image')) {
             $image = $request->file('profile_image');
             // 新しい画像を profile_images に保存
-            $path = $image->store('Images/profile_images', 'public');
+            $path = $image->store('images/profile_images', 'public');
         
-            // 古い画像が profile_images 内にあれば削除（profile_images_sample 内は削除しない）
+            // 古い画像がサンプル画像でなければ削除
             if ($user->profile && $user->profile->image_path) {
-                // サンプル画像でなければ削除
-                if (Str::startsWith($user->profile->image_path, 'Images/profile_images/')) {
+                if (!Str::contains($user->profile->image_path, 'profile_image_samples')) {
                     Storage::disk('public')->delete($user->profile->image_path);
                 }
-                // サンプル画像（profile_images_sample）は削除しない
             }
         
             $profileData['image_path'] = $path;
