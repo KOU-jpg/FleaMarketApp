@@ -31,9 +31,9 @@ return [
     ],
 
     'stripe' => [
-    'model' => App\Models\User::class,
-    'key' => env('STRIPE_PUBLIC_KEY'),
-    'secret' => env('STRIPE_SECRET_KEY'),
-],
+    'key' => env('STRIPE_PUBLIC_KEY'),       // ここが公開キー
+    'secret' => env('STRIPE_SECRET_KEY'),    // ここが秘密キー
+    'webhook_secret' => env('STRIPE_WEBHOOK_SECRET')
+    ],
 
 ];

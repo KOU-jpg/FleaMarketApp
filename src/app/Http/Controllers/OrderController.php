@@ -22,21 +22,6 @@ class OrderController extends Controller
         ]);
     }
 
-//購入処理
-    public function purchase(PurchaseRequest $request, $item_id)
-    {
-        $item = Item::findOrFail($item_id);
-        // 支払い方法を取得
-        $paymentMethod = $request->input('payment_method');
-            // sold_atに現在時刻をセットし売り切れ状態にする
-            $item->sold_at = Carbon::now();
-            $item->buyer_id = Auth::id();
-            $item->save();
-
-        // 購入完了ページへリダイレクト
-        return redirect()->route('items.index');
-    }
-
 //住所変更ページ表示
     public function showAddressForm($item_id)
     {

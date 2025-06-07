@@ -93,3 +93,6 @@ php artisan db:seed
 # FleaMarketApp
 
 composer require stripe/stripe-php
+
+./stripe listen --forward-to http://localhost:4242/stripe/webhook
+php artisan serve --port=4242
