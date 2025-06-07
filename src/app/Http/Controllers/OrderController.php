@@ -34,15 +34,7 @@ class OrderController extends Controller
             $item->save();
 
         // 購入完了ページへリダイレクト
-        return redirect()->route('thanks');
-    }
-
-
-
-//商品購入完了ページ表示
-    public function thanks()
-    {
-        return view('orders.complete');
+        return redirect()->route('items.index');
     }
 
 //住所変更ページ表示

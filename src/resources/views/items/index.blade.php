@@ -31,7 +31,7 @@
         <a href="{{ route('items.detail', $item->id) }}" >
             <div class="item-card">
                 <div class="item-image">
-                    @if($item->sold_at)
+                    @if(in_array($item->payment_status, ['pending', 'paid']))
                         <div class="sold-label">SOLD</div>
                     @endif
                     @if($item->images->count())

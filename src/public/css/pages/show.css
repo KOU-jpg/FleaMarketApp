@@ -7,6 +7,16 @@ main {
 
 }
 
+.alert.alert-danger {
+    margin: 20px auto 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+    color:#d9534f;
+    max-width: 80%;
+    border: 2px solid #d9534f;
+}
+
 .purchase-container {
     display: flex;
     max-width: 900px;

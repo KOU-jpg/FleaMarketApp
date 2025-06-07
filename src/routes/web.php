@@ -8,6 +8,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SellController;
+use App\Http\Controllers\StripePaymentController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -42,8 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 商品購入画面
     Route::get('/purchase/{item_id}', [OrderController::class, 'show'])->name('purchase.show');
     //購入処理
-    Route::post('/purchase/{item_id}', [OrderController::class, 'purchase'])->name('purchase');
-    Route::get('/thanks', [OrderController::class, 'thanks'])->name('thanks');
+    Route::post('/purchase/{item_id}/checkout', [StripePaymentController::class, 'checkout'])->name('purchase.checkout');
+    Route::get('/purchase/cancel', [StripePaymentController::class, 'cancel'])->name('purchase.cancel');
+    //stripe決済後Webhook
+    Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);
 
     // 住所変更ページ
     Route::get('/purchase/address/{item_id}', [OrderController::class, 'showAddressForm'])->name('address.form');
@@ -76,3 +79,6 @@ Route::get('/verify-email/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 Route::post('/verify-email/resend', [AuthController::class, 'resendVerificationEmail'])
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
+
+// Stripe Webhook（認証不要）
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']);

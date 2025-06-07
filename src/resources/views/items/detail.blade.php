@@ -11,7 +11,7 @@
       <div class="product-detail-container">
         <div class="product-image-area">
         <div class="product-image-box">
-          @if($item->sold_at)
+        @if(in_array($item->payment_status, ['pending', 'paid']))
               <div class="sold-label">SOLD</div>
         @endif
           @if($item->images->count())
@@ -44,7 +44,7 @@
         </div>
         <div id="favorite-error-message" style="color: red; margin-top: 8px; display: none;"></div>
         <div class="product-actions">
-          @if($item->sold_at)
+          @if(in_array($item->payment_status, ['pending', 'paid']))
               <button class="purchase-btn soldout" disabled>売り切れました</button>
           @else
           @if(Auth::check() && Auth::user()->hasVerifiedEmail())
@@ -103,7 +103,7 @@
                 @error('comment')
                     <div class="error-message">{{ $message }}</div>
                 @enderror
-                @if($item->sold_at)
+                @if(in_array($item->payment_status, ['pending', 'paid']))
                     <button class="comment-submit-btn soldout" disabled>売り切れました</button>
                 @elseif(Auth::check() && Auth::user()->hasVerifiedEmail())
                 <button type="submit" class="comment-submit-btn">コメントを投稿する</button>

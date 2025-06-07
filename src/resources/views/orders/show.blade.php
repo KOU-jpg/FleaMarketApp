@@ -13,7 +13,13 @@
 @endsection
 
 @section('content')
-    <form method="POST" action="{{ route('purchase', ['item_id' => $item->id]) }}" novalidate>
+{{-- エラーメッセージの表示 --}}
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    <form method="POST" action="{{ route('purchase.checkout', ['item_id' => $item->id]) }}" novalidate>
         @csrf
         <div class="purchase-container">
             <!-- 左カラム -->
@@ -75,7 +81,7 @@
                         <span class="order-value" id="summary-payment-method">選択してください</span>
                     </div>
                 </div>
-                @if($item->sold_at)
+                @if(in_array($item->payment_status, ['pending', 'paid']))
                     <button class="purchase-btn soldout" type="button" disabled>既に購入されています</button>
                 @else
                     <button class="purchase-btn" type="submit">購入する</button>

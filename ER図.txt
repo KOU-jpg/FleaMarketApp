@@ -41,10 +41,12 @@ ITEMS {
     string name
     text description
     string brand
-    decimal price
+    unsigned int price
     timestamp sold_at
-    unsignedInteger favorite_count
-    unsignedInteger like_count
+    string payment_status
+    timestamp payment_expiry
+    unsigned int favorite_count
+    unsigned int like_count
     timestamp created_at
     timestamp updated_at
 }
